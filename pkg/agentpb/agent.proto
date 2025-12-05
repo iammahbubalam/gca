@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package agentpb;
+
+option go_package = "github.com/iammahbubalam/ghost-agent/pkg/agentpb";
+
+// AgentService - VM management operations
+service AgentService {
+  rpc CreateVM(CreateVMRequest) returns (CreateVMResponse);
+  rpc DeleteVM(DeleteVMRequest) returns (DeleteVMResponse);
+  rpc StartVM(StartVMRequest) returns (StartVMResponse);
+  rpc StopVM(StopVMRequest) returns (StopVMResponse);
+  rpc GetVMStatus(GetVMStatusRequest) returns (GetVMStatusResponse);
+  rpc ListVMs(ListVMsRequest) returns (ListVMsResponse);
+}
+
+// CreateVM Request
+message CreateVMRequest {
+  string name = 1;
+  int32 vcpu = 2;
+  int32 ram_gb = 3;
+  int32 disk_gb = 4;
+  string template = 5;  // e.g., "ubuntu-22.04"
+  map<string, string> metadata = 6;  // Optional metadata
+}
+
+// CreateVM Response
+message CreateVMResponse {
+  string vm_id = 1;
+  string ip_address = 2;
+  string status = 3;  // "running", "error"
+  string error = 4;   // Error message if failed
+}
+
+// DeleteVM Request
+message DeleteVMRequest {
+  string vm_id = 1;
+}
+
+// DeleteVM Response
+message DeleteVMResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+// StartVM Request
+message StartVMRequest {
+  string vm_id = 1;
+}
+
+// StartVM Response
+message StartVMResponse {
+  string status = 1;
+  string error = 2;
+}
+
+// StopVM Request
+message StopVMRequest {
+  string vm_id = 1;
+  bool force = 2;  // Force shutdown
+}
+
+// StopVM Response
+message StopVMResponse {
+  string status = 1;
+  string error = 2;
+}
+
+// GetVMStatus Request
+message GetVMStatusRequest {
+  string vm_id = 1;
+}
+
+// GetVMStatus Response
+message GetVMStatusResponse {
+  string vm_id = 1;
+  string name = 2;
+  string status = 3;
+  int32 vcpu = 4;
+  int32 ram_gb = 5;
+  int32 disk_gb = 6;
+  string ip_address = 7;
+  int64 uptime_seconds = 8;
+  float cpu_usage_percent = 9;
+  float ram_usage_percent = 10;
+}
+
+// ListVMs Request
+message ListVMsRequest {
+  // Empty - list all VMs
+}
+
+// ListVMs Response
+message ListVMsResponse {
+  repeated VMInfo vms = 1;
+}
+
+message VMInfo {
+  string vm_id = 1;
+  string name = 2;
+  string status = 3;
+  string ip_address = 4;
+}

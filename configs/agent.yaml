@@ -1,0 +1,95 @@
+# Ghost Agent Configuration
+
+agent:
+  # Unique name for this agent
+  name: "my-pc"
+
+  # Ghost API URL (Headscale IP)
+  api_url: "https://100.64.0.1:8080"
+
+  # Heartbeat interval
+  heartbeat_interval: 30s
+
+  # Agent version (auto-populated)
+  version: "1.0.0"
+
+# Libvirt configuration
+libvirt:
+  # Libvirt connection URI
+  uri: "qemu:///system"
+
+  # Storage pool for VM disks
+  storage_pool: "default"
+
+  # Network for VMs
+  network: "default"
+
+  # Image cache directory
+  image_cache: "/var/lib/ghost/images"
+
+# Resource configuration
+resources:
+  # CPU cores to reserve for PC owner
+  reserved_cpu: 2
+
+  # RAM to reserve for PC owner (GB)
+  reserved_ram_gb: 4
+
+  # Disk space to reserve for PC owner (GB)
+  reserved_disk_gb: 50
+
+# gRPC server configuration
+grpc:
+  # Listen address
+  listen_addr: "0.0.0.0:9090"
+
+  # Enable TLS
+  tls_enabled: true
+
+  # TLS certificate file
+  tls_cert: "/etc/ghost/certs/agent.crt"
+
+  # TLS key file
+  tls_key: "/etc/ghost/certs/agent.key"
+
+  # CA certificate file
+  tls_ca: "/etc/ghost/certs/ca.crt"
+
+# Logging configuration
+logging:
+  # Log level: debug, info, warn, error
+  level: "info"
+
+  # Log output: stdout, file, both
+  output: "both"
+
+  # Log file path
+  file: "/var/log/ghost/agent.log"
+
+  # Log format: json, text
+  format: "json"
+
+  # Max log file size (MB)
+  max_size: 100
+
+  # Max log file age (days)
+  max_age: 7
+
+# Metrics configuration
+metrics:
+  # Enable Prometheus metrics
+  enabled: true
+
+  # Metrics endpoint
+  listen_addr: "0.0.0.0:9091"
+
+  # Metrics path
+  path: "/metrics"
+
+# Health check configuration
+health:
+  # Health check endpoint
+  listen_addr: "0.0.0.0:9092"
+
+  # Health check path
+  path: "/health"

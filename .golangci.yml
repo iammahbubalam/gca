@@ -1,0 +1,39 @@
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - gofmt
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - gosimple
+    - ineffassign
+    - typecheck
+    - gosec # Security
+    - gocritic # Code quality
+    - gocyclo # Cyclomatic complexity
+    - dupl # Code duplication
+    - misspell # Spelling
+    - unparam # Unused parameters
+    - unconvert # Unnecessary conversions
+    - prealloc # Slice preallocation
+    - exportloopref # Loop variable capture
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15
+  dupl:
+    threshold: 100
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - performance
+      - style
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0

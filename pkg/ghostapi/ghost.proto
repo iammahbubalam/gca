@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package ghostapi;
+
+option go_package = "github.com/iammahbubalam/ghost-agent/pkg/ghostapi";
+
+// GhostCoreService - Ghost Cloud Core API
+service GhostCoreService {
+  // Agent Management
+  rpc RegisterAgent(RegisterAgentRequest) returns (RegisterAgentResponse);
+  rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse);
+  rpc UnregisterAgent(UnregisterAgentRequest) returns (UnregisterAgentResponse);
+  
+  // VM Status Reporting
+  rpc ReportVMCreated(ReportVMCreatedRequest) returns (ReportVMCreatedResponse);
+  rpc ReportVMDeleted(ReportVMDeletedRequest) returns (ReportVMDeletedResponse);
+  rpc ReportVMStatusChange(ReportVMStatusChangeRequest) returns (ReportVMStatusChangeResponse);
+}
+
+// Agent Registration
+message RegisterAgentRequest {
+  string agent_name = 1;
+  string tailscale_ip = 2;
+  ResourceInfo resources = 3;
+  string version = 4;
+}
+
+message RegisterAgentResponse {
+  string agent_id = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+// Heartbeat
+message HeartbeatRequest {
+  string agent_id = 1;
+  ResourceInfo resources = 2;
+  repeated VMInfo vms = 3;
+  int64 timestamp = 4;
+}
+
+message HeartbeatResponse {
+  bool success = 1;
+  string message = 2;
+  repeated Command commands = 3;  // Commands from Ghost Core
+}
+
+// Unregister Agent
+message UnregisterAgentRequest {
+  string agent_id = 1;
+}
+
+message UnregisterAgentResponse {
+  bool success = 1;
+}
+
+// VM Status Reporting
+message ReportVMCreatedRequest {
+  string agent_id = 1;
+  string vm_id = 2;
+  string vm_name = 3;
+  int32 vcpu = 4;
+  int32 ram_gb = 5;
+  int32 disk_gb = 6;
+  string ip_address = 7;
+  string template = 8;
+}
+
+message ReportVMCreatedResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ReportVMDeletedRequest {
+  string agent_id = 1;
+  string vm_id = 2;
+}
+
+message ReportVMDeletedResponse {
+  bool success = 1;
+}
+
+message ReportVMStatusChangeRequest {
+  string agent_id = 1;
+  string vm_id = 2;
+  string status = 3;  // running, stopped, error
+}
+
+message ReportVMStatusChangeResponse {
+  bool success = 1;
+}
+
+// Common Types
+message ResourceInfo {
+  int32 total_cpu = 1;
+  int32 available_cpu = 2;
+  int32 total_ram_gb = 3;
+  int32 available_ram_gb = 4;
+  int32 total_disk_gb = 5;
+  int32 available_disk_gb = 6;
+}
+
+message VMInfo {
+  string vm_id = 1;
+  string vm_name = 2;
+  string status = 3;
+  string ip_address = 4;
+  int32 vcpu = 5;
+  int32 ram_gb = 6;
+}
+
+message Command {
+  string command_id = 1;
+  string type = 2;  // create_vm, delete_vm, start_vm, stop_vm
+  map<string, string> params = 3;
+}
