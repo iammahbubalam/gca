@@ -12,6 +12,71 @@ Production-grade VM management daemon for Ghost Cloud.
 - ✅ Graceful shutdown
 - ✅ Production-ready observability
 
+## System Overview
+
+Ghost Agent is a production-grade VM management daemon that runs on user PCs, managing virtual machines via KVM/Libvirt and communicating with Ghost Cloud Core.
+
+```mermaid
+graph TB
+    subgraph "User PC"
+        subgraph "Ghost Agent"
+            CLI[ghostctl CLI]
+            GRPC[gRPC Server :9090]
+            HTTP[HTTP Server :9092]
+            METRICS[Metrics :9091]
+            
+            subgraph "Application Layer"
+                UC1[CreateVM UseCase]
+                UC2[DeleteVM UseCase]
+                UC3[StartVM UseCase]
+                UC4[StopVM UseCase]
+                UC5[GetStatus UseCase]
+                UC6[ListVMs UseCase]
+            end
+            
+            subgraph "Domain Layer"
+                ENT[Entities: VM, Resource, Image]
+                REPO[Repository Interfaces]
+                SVC[Service Interfaces]
+            end
+            
+            subgraph "Infrastructure Layer"
+                LIB[Libvirt Adapter]
+                NET[Network Adapter]
+                STOR[Storage Adapter]
+                API[Ghost Core Client]
+                OBS[Observability]
+                PERSIST[Persistent Storage]
+            end
+        end
+        
+        KVM[KVM/QEMU]
+        TS[Tailscale]
+        DISK[/var/lib/ghost/]
+    end
+    
+    CLOUD[Ghost Cloud Core API]
+    
+    CLI --> GRPC
+    GRPC --> UC1 & UC2 & UC3 & UC4 & UC5 & UC6
+    UC1 & UC2 & UC3 & UC4 & UC5 & UC6 --> REPO & SVC
+    REPO & SVC --> LIB & NET & STOR & PERSIST
+    LIB --> KVM
+    NET --> KVM
+    STOR --> DISK
+    PERSIST --> DISK
+    API --> CLOUD
+    API -.Heartbeat.-> CLOUD
+    TS -.VPN.-> CLOUD
+    
+    style CLI fill:#e1f5ff
+    style GRPC fill:#fff4e1
+    style API fill:#ffe1e1
+    style CLOUD fill:#e1ffe1
+```
+
+---
+
 ## Quick Start
 
 ### Prerequisites
