@@ -1,4 +1,4 @@
-# Ghost Agent
+# Ghost Cloud Agent
 
 Production-grade VM management daemon for Ghost Cloud.
 
